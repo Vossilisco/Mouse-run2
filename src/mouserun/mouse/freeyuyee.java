@@ -16,7 +16,9 @@ public class freeyuyee extends Mouse {
     Stack<Integer> colaCamino;
     Stack<Grid> otraRuta;
 
-    /*Constructor para dar nombre al raton*/
+    /// <summary>
+    /// Constructor, para dar nombre al raton.
+    /// </summary>
     public freeyuyee() {
         super("#FREEYUYEE");
         mapa = new HashMap<Integer, Grid>();
@@ -26,17 +28,24 @@ public class freeyuyee extends Mouse {
         otraRuta = new Stack<Grid>();
     }
 
+    /// <summary>
+    /// Devuelve un entero hash que nos ayudará a situar una casilla en nuestro HashMap.
+    /// </summary>
+    /// <param name="accepted">Dos enteros que.</param>
     private static int clavemapa(int x, int y) {
         return (x * 10000 + y);
     }
 
+    /// <summary>
+    /// Metodo principal del movimiento del raton, devolverá un entero que será el siguiente paso del raton..
+    /// </summary>
     @Override
     public int move(Grid currentGrid, Cheese cheese) {
 
         Integer ratonX = currentGrid.getX();
         Integer ratonY = currentGrid.getY();
 
-        /*Si no conoce esta casilla, la guarda en la tabla*/
+        ///Si no conoce la casilla en la que esta
         if (mapa.get(clavemapa(ratonX, ratonY)) == null) {
             mapa.put(clavemapa(ratonX, ratonY), currentGrid);
 
@@ -59,66 +68,52 @@ public class freeyuyee extends Mouse {
             }
         }
 
-            Grid casillaArriba = new Grid(ratonX, ratonY + 1);
-            Grid casillaAbajo = new Grid(ratonX, ratonY - 1);
-            Grid casillaIzq = new Grid(ratonX - 1, ratonY);
-            Grid casillaDer = new Grid(ratonX + 1, ratonY);
-            Grid siguienteCasilla = otraRuta.firstElement();
-            if (siguienteCasilla == casillaArriba) {
-                colaCamino.push(DOWN);
-                otraRuta.pop();
-                return UP;
-            }
-            if (siguienteCasilla == casillaAbajo) {
-                colaCamino.push(UP);
-                otraRuta.pop();
-                return DOWN;
-            }
-            if (siguienteCasilla == casillaIzq) {
-                colaCamino.push(RIGHT);
-                otraRuta.pop();
-                return LEFT;
-            }
-            if (siguienteCasilla == casillaDer) {
-                colaCamino.push(LEFT);
-                otraRuta.pop();
-                return RIGHT;
-            }
+        Grid casillaArriba = new Grid(ratonX, ratonY + 1);
+        Grid casillaAbajo = new Grid(ratonX, ratonY - 1);
+        Grid casillaIzq = new Grid(ratonX - 1, ratonY);
+        Grid casillaDer = new Grid(ratonX + 1, ratonY);
+        Grid siguienteCasilla = otraRuta.firstElement();
+        if (siguienteCasilla == casillaArriba) {
+            colaCamino.push(DOWN);
+            otraRuta.pop();
+            return UP;
+        }
+        if (siguienteCasilla == casillaAbajo) {
+            colaCamino.push(UP);
+            otraRuta.pop();
+            return DOWN;
+        }
+        if (siguienteCasilla == casillaIzq) {
+            colaCamino.push(RIGHT);
+            otraRuta.pop();
+            return LEFT;
+        }
+        if (siguienteCasilla == casillaDer) {
+            colaCamino.push(LEFT);
+            otraRuta.pop();
+            return RIGHT;
+        }
 
-            return colaCamino.pop();
-            /**
-             * if (otraRuta.empty()) { return colaCamino.pop(); } //DE LA COLA
-             * HAY QUE TIRARR SI POSIBLES RUTAS ESTA VACIO else //if
-             * (!otraRuta.empty()){ /** if (otraRuta.firstElement()==1)
-             * colaCamino.push(2); if (otraRuta.firstElement()==2)
-             * colaCamino.push(1); if (otraRuta.firstElement()==3)
-             * colaCamino.push(4); if (otraRuta.firstElement()==4)
-             * colaCamino.push(3);
-             */
-        
+        return colaCamino.pop();
+        /**
+         * if (otraRuta.empty()) { return colaCamino.pop(); } //DE LA COLA HAY
+         * QUE TIRARR SI POSIBLES RUTAS ESTA VACIO else //if
+         * (!otraRuta.empty()){ /** if (otraRuta.firstElement()==1)
+         * colaCamino.push(2); if (otraRuta.firstElement()==2)
+         * colaCamino.push(1); if (otraRuta.firstElement()==3)
+         * colaCamino.push(4); if (otraRuta.firstElement()==4)
+         * colaCamino.push(3);
+         */
+
     }
 
-    /**
-     * if (maparecorrido.get(clavemapa(ratonX, ratonY)) == null) {
-     * incExploredGrids(); maparecorrido.put(clavemapa(ratonX, ratonY),
-     * currentGrid); }
-     *
-     * if (currentGrid.canGoDown() && (mapa.get(clavemapa(ratonX, ratonY - 1))
-     * == null)) { memoria.push(1); return Mouse.DOWN; } if
-     * (currentGrid.canGoUp() && mapa.get(clavemapa(ratonX, ratonY + 1)) ==
-     * null) { memoria.push(2); return Mouse.UP; }
-     *
-     * if (currentGrid.canGoRight() && mapa.get(clavemapa(ratonX + 1, ratonY))
-     * == null) { memoria.push(3); return Mouse.RIGHT; } if
-     * (currentGrid.canGoLeft() && mapa.get(clavemapa(ratonX - 1, ratonY)) ==
-     * null) { memoria.push(4); return Mouse.LEFT; } if (!memoria.empty()) {
-     * return memoria.pop(); } else { mapa = new HashMap<Integer, Grid>(); }
-     * return Mouse.BOMB;
-     */
     @Override
     public void newCheese() {
     }
 
+    /// <summary>
+    /// Metodo que se ejecutará cada vez que nuestro raton reaparezca.
+    /// </summary>
     @Override
     public void respawned() {
         mapa = new HashMap<Integer, Grid>();
