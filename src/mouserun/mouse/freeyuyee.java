@@ -1,8 +1,8 @@
-// Codigo de grupo: M16B11
-// UP: vale 1 |  DOWN: vale 2 | LEFT: vale 3 | RIGHT: vale 4 | BOMB: vale 5
 package mouserun.mouse;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 import mouserun.game.Grid;
 import mouserun.game.Mouse;
@@ -14,7 +14,12 @@ public class freeyuyee extends Mouse {
     HashMap<Integer, Grid> maparecorrido;
     Stack<Integer> memoria;
     Stack<Integer> colaCamino;
-    Stack<Grid> otraRuta;
+    Queue<Grid> otraRuta;
+    Grid siguienteCasilla;
+    Grid casillaDer;
+    Grid casillaIzq;
+    Grid casillaArriba;
+    Grid casillaAbajo;
 
     /// <summary>
     /// Constructor, para dar nombre al raton.
@@ -25,7 +30,7 @@ public class freeyuyee extends Mouse {
         maparecorrido = new HashMap<Integer, Grid>();
         memoria = new Stack<Integer>();
         colaCamino = new Stack<Integer>();
-        otraRuta = new Stack<Grid>();
+        otraRuta = new LinkedList<Grid>();
     }
 
     /// <summary>
@@ -44,73 +49,96 @@ public class freeyuyee extends Mouse {
 
         Integer ratonX = currentGrid.getX();
         Integer ratonY = currentGrid.getY();
-
         ///Si no conoce la casilla en la que esta
+
         if (mapa.get(clavemapa(ratonX, ratonY)) == null) {
             mapa.put(clavemapa(ratonX, ratonY), currentGrid);
-
-            if (currentGrid.canGoUp() && mapa.get(clavemapa(ratonX, ratonY + 1)) == null) {
-                Grid casilla = new Grid(ratonX, ratonY + 1);
-                otraRuta.push(casilla);
-            }
-            if (currentGrid.canGoRight() && mapa.get(clavemapa(ratonX + 1, ratonY)) == null) {
-                Grid casilla = new Grid(ratonX + 1, ratonY);
-                otraRuta.push(casilla);
-            }
-            if (currentGrid.canGoDown() && mapa.get(clavemapa(ratonX, ratonY - 1)) == null) {
-                Grid casilla = new Grid(ratonX, ratonY - 1);
-                otraRuta.push(casilla);
-            }
-            if (currentGrid.canGoLeft() && mapa.get(clavemapa(ratonX - 1, ratonY)) == null) {
-                Grid casilla = new Grid(ratonX - 1, ratonY);
-                otraRuta.push(casilla);
-
-            }
         }
 
-        Grid casillaArriba = new Grid(ratonX, ratonY + 1);
-        Grid casillaAbajo = new Grid(ratonX, ratonY - 1);
-        Grid casillaIzq = new Grid(ratonX - 1, ratonY);
-        Grid casillaDer = new Grid(ratonX + 1, ratonY);
-        Grid siguienteCasilla = otraRuta.firstElement();
-        if (siguienteCasilla == casillaArriba) {
+        if (currentGrid.canGoUp() && mapa.get(clavemapa(ratonX, ratonY + 1)) == null) {
+            Grid casilla = new Grid(ratonX, ratonY + 1);
+            otraRuta.add(casilla);
+            mapa.put(clavemapa(ratonX, ratonY + 1), casilla);
+            System.out.println("hola A");
+        }
+        if (currentGrid.canGoRight() && mapa.get(clavemapa(ratonX + 1, ratonY)) == null) {
+            Grid casilla = new Grid(ratonX + 1, ratonY);
+            otraRuta.add(casilla);
+            mapa.put(clavemapa(ratonX + 1, ratonY), casilla);
+            System.out.println("hola D");
+        }
+        if (currentGrid.canGoDown() && mapa.get(clavemapa(ratonX, ratonY - 1)) == null) {
+            Grid casilla = new Grid(ratonX, ratonY - 1);
+            otraRuta.add(casilla);
+            mapa.put(clavemapa(ratonX, ratonY - 1), casilla);
+            System.out.println("hola AB");
+        }
+        if (currentGrid.canGoLeft() && mapa.get(clavemapa(ratonX - 1, ratonY)) == null) {
+            Grid casilla = new Grid(ratonX - 1, ratonY);
+            otraRuta.add(casilla);
+            mapa.put(clavemapa(ratonX + 1, ratonY), casilla);
+            System.out.println("hola I");
+
+        }
+
+        casillaArriba = new Grid(ratonX, ratonY + 1);
+        casillaAbajo = new Grid(ratonX, ratonY - 1);
+        casillaIzq = new Grid(ratonX - 1, ratonY);
+        casillaDer = new Grid(ratonX + 1, ratonY);
+        siguienteCasilla = otraRuta.element();
+        System.out.println("casilla que tenemos que visitar: ");
+        System.out.println(siguienteCasilla.getX() + " " + siguienteCasilla.getY());
+        System.out.println("casilla que tenemos que tenemos ARRIBA: ");
+        System.out.println(casillaArriba.getX() + " " + casillaArriba.getY());
+        System.out.println("casilla que tenemos que tenemos ABAJO: ");
+        System.out.println(casillaAbajo.getX() + " " + casillaAbajo.getY());
+        System.out.println("casilla que tenemos que tenemos IZQ: ");
+        System.out.println(casillaIzq.getX() + " " + casillaIzq.getY());
+        System.out.println("casilla que tenemos que tenemos DER: ");
+        System.out.println(casillaDer.getX() + " " + casillaDer.getY());
+
+        if ((siguienteCasilla.getX() == casillaArriba.getX()) && (siguienteCasilla.getY() == casillaArriba.getY())) {
+            System.out.println("Arriba tenemos una casilla nueva, vamos a sacarla x mis muerto!");
             colaCamino.push(DOWN);
-            otraRuta.pop();
-            return UP;
+            otraRuta.remove();
+            return Mouse.UP;
         }
-        if (siguienteCasilla == casillaAbajo) {
+        if ((siguienteCasilla.getX() == casillaAbajo.getX()) && (siguienteCasilla.getY() == casillaAbajo.getY())) {
+            System.out.println("Abajo tenemos una casilla nueva, vamos a sacarla x mis muerto!");
             colaCamino.push(UP);
-            otraRuta.pop();
-            return DOWN;
+            otraRuta.remove();
+            return Mouse.DOWN;
         }
-        if (siguienteCasilla == casillaIzq) {
+        if ((siguienteCasilla.getX() == casillaIzq.getX()) && (siguienteCasilla.getY() == casillaIzq.getY())) {
+            System.out.println("A la izquierda tenemos una casilla nueva, vamos a sacarla x mis muerto!");
             colaCamino.push(RIGHT);
-            otraRuta.pop();
-            return LEFT;
+            otraRuta.remove();
+            return Mouse.LEFT;
         }
-        if (siguienteCasilla == casillaDer) {
+        if ((siguienteCasilla.getX() == casillaDer.getX()) && (siguienteCasilla.getY() == casillaDer.getY())) {
+            System.out.println("A la derecha tenemos una casilla nueva, vamos a sacarla x mis muerto!");
             colaCamino.push(LEFT);
-            otraRuta.pop();
-            return RIGHT;
+            otraRuta.remove();
+            return Mouse.RIGHT;
         }
-
-        return colaCamino.pop();
-        /**
-         * if (otraRuta.empty()) { return colaCamino.pop(); } //DE LA COLA HAY
-         * QUE TIRARR SI POSIBLES RUTAS ESTA VACIO else //if
-         * (!otraRuta.empty()){ /** if (otraRuta.firstElement()==1)
-         * colaCamino.push(2); if (otraRuta.firstElement()==2)
-         * colaCamino.push(1); if (otraRuta.firstElement()==3)
-         * colaCamino.push(4); if (otraRuta.firstElement()==4)
-         * colaCamino.push(3);
-         */
-
+    
+        int haVolver=colaCamino.pop();
+        colaCamino.clear();
+        return haVolver;
     }
 
     @Override
     public void newCheese() {
     }
 
+    public int contrario(int x){
+        if (x==1) return 2;
+        if (x==2) return 1;
+        if (x==3) return 4;
+        if (x==4) return 3; 
+        return 5;
+    }
+    
     /// <summary>
     /// Metodo que se ejecutará cada vez que nuestro raton reaparezca.
     /// </summary>
@@ -118,5 +146,7 @@ public class freeyuyee extends Mouse {
     public void respawned() {
         mapa = new HashMap<Integer, Grid>();
         memoria = new Stack<Integer>();
+        colaCamino = new Stack<Integer>();
+        otraRuta.clear();
     }
 }
